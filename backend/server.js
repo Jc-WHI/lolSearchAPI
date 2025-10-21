@@ -6,6 +6,7 @@ import {
   getMatchDetails,
 } from './getUserPuuid.js';
 import 'dotenv/config';
+import 'sqlite3';
 const baseapiURL = 'https://asia.api.riotgames.com';
 const aramQueueId = 450; // 칼바람
 const MATCH_COUNT = 10; //조회 경기수 파라메터
@@ -19,13 +20,13 @@ global.globalTimer = globalTimer;
 // 20 requests every 1 seconds(s)
 //100 requests every 2 minutes(s)
 
-async function search(userName, userTag, start, end) {
+async function search(userName, userTag, start = 0) {
   const userpuuid = await getPuuid(userName, userTag, apikey);
-  const matchIds = await getAramMatchId(userpuuid, apikey, start, end);
+  const matchIds = await getAramMatchId(userpuuid, apikey, start);
   if (!matchIds || matchIds.length === 0) {
     console.log('해당 계정의 플레이 내역이 없습니다.');
     console.log('게임 이력이 없으므로 검색을 종료합니다');
-    return;
+    return 0;
   }
   const matchDetailsPromises = matchIds.map((matchid) => getMatchDetails(matchid, apikey));
   const allMatchData = await Promise.all(matchDetailsPromises);
@@ -46,4 +47,6 @@ async function search(userName, userTag, start, end) {
   console.log(user_data);
 }
 
-await search('아기개미핥기파르', '널름이', 0);
+let userInformations = await search('아기개미핥기파르', '널름이');
+console.log(userInformations);
+// save user informations to db

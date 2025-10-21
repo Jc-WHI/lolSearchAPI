@@ -1,6 +1,3 @@
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('userInformation.db');
-
 //create user table
 const createUserTableSql = `
 create table if not exists users(
@@ -37,6 +34,7 @@ db.run(createMatchesTablesql, (err) => {
   console.log('Matches table created');
 });
 
+//보완필요, 이거 안될 것 같은데.. 배열 순회하면서 추출후 쿼리..
 export function getUserInformationQuery(userInfo) {
   userInfo.map((element) => {
     let query = `insert into users(${element.userpuuid},${element.userid},${element.usertag})`;
